@@ -27,9 +27,10 @@ class Customer {
                   phone,
                   notes
            FROM customers
-           WHERE LOWER(first_name) LIKE LOWER('%${name}%') OR 
-                  LOWER(last_name) LIKE LOWER('%${name}%')
-           ORDER BY last_name, first_name`,
+           WHERE first_name ILIKE $1 OR 
+                  last_name ILIKE $1
+           ORDER BY last_name, first_name`, 
+           [`%${name}%`]
     );
     return results.rows.map(c => new Customer(c));
   }
@@ -98,9 +99,13 @@ class Customer {
     return await Reservation.getReservationsForCustomer(this.id);
   }
 
+  
+  /** returns full name */
+
   fullName() {
     return `${this.firstName} ${this.lastName}`
   }
+
 
   /** save this customer. */
 
