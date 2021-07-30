@@ -3,7 +3,7 @@
 /** Reservation for Lunchly */
 
 const moment = require("moment");
-
+const { ForbiddenError } = require("../expressError");
 const db = require("../db");
 
 /** A reservation for a party */
@@ -40,6 +40,55 @@ class Reservation {
     return results.rows.map(row => new Reservation(row));
   }
 
+  // /** notes getter */
+  // get notes() {
+  //   return this._notes;
+  // }
+
+  // /** notes setter */
+  // set notes(notes) {
+  //   if (!notes) notes = "";
+  //   this._notes = notes;
+  // }
+
+  // /** numGuests getter */
+  // get numGuests() {
+  //   return this._numGuests;
+  // }
+
+  // /** numGuests setter */
+  // set numGuests(numGuests) {
+  //   if (numGuests < 1) throw new ForbiddenError("Need at least 1 guest");
+  //   this._numGuests = numGuests;
+  // }
+
+  // /** startAt getter */
+  // get startAt() {
+  //   return this._startAt;
+  // }
+
+  // /** startAt setter */
+  // set startAt(startAt) {
+  //   try {
+  //     this._startAt = new Date(startAt);
+  //   } catch {
+  //     throw new ForbiddenError("Must pass in a correct Date");
+  //   }
+  // }
+
+  // /** customerId getter */
+  // get customerId() {
+  //   return this._customerId;
+  // }
+
+  // /** customerId setter */
+  // set customerId(customerId) {
+  //   if (this._customerId && customerId !== this._customerId) {
+  //     throw new ForbiddenError("You cannot change a reservation's customer");
+  //   }
+  //   this._customerId = customerId;
+  // }
+
   /** save this reservation. */
 
   async save(customerId) {
@@ -47,7 +96,7 @@ class Reservation {
       const result = await db.query(
             `INSERT INTO reservations (customer_id, start_at, num_guests, notes)
               VALUES ($1, $2, $3, $4)
-              RETURNING id`,
+              RETURNING id, customer_id`,
           [customerId, this.startAt, this.numGuests, this.notes],
       );
       this.id = result.rows[0].id;
