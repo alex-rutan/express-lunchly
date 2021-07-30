@@ -77,7 +77,7 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
     numGuests,
     notes,
   });
-  await reservation.save();
+  await reservation.save(customerId);
 
   return res.redirect(`/${customerId}/`);
 });
