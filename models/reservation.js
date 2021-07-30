@@ -17,6 +17,13 @@ class Reservation {
     this.notes = notes;
   }
 
+  /** formatter for most recent reservation startAt */
+
+  getMostRecentStartAt() {
+    return moment(this.startAt, "MMMM Do YYYY, h:mm a").fromNow();
+  }
+
+
   /** formatter for startAt */
 
   getFormattedStartAt() {
@@ -33,7 +40,8 @@ class Reservation {
                   start_at AS "startAt",
                   notes AS "notes"
            FROM reservations
-           WHERE customer_id = $1`,
+           WHERE customer_id = $1
+           ORDER BY start_at DESC`,
         [customerId],
     );
 

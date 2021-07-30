@@ -20,6 +20,9 @@
       <h2>Reservations</h2>
       {% if reservations %}
         <ul>
+            <li>
+              {{ firstReservation.getMostRecentStartAt() }}
+            </li>
           {% for reservation in reservations %}
             <li>
               <b>{{ reservation.getFormattedStartAt() }}</b>

@@ -56,9 +56,11 @@ router.post("/add/", async function (req, res, next) {
 router.get("/:id/", async function (req, res, next) {
   const customer = await Customer.get(req.params.id);
 
-  const reservations = await customer.getReservations();
-  
-  return res.render("customer_detail.html", { customer, reservations });
+  let reservations = await customer.getReservations(); 
+  const firstReservation = reservations[0];
+  reservations = reservations.slice(1, reservations.length);
+
+  return res.render("customer_detail.html", { customer, reservations, firstReservation });
 });
 
 /** Show form to edit a customer. */
