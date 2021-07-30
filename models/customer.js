@@ -16,6 +16,25 @@ class Customer {
     this.notes = notes;
   }
 
+
+  /** search for customers by name. */
+
+  static async search(name) {
+    const results = await db.query(
+      `SELECT id,
+                  first_name AS "firstName",
+                  last_name  AS "lastName",
+                  phone,
+                  notes
+           FROM customers
+           WHERE LOWER(first_name) LIKE LOWER('%${name}%') OR 
+                  LOWER(last_name) LIKE LOWER('%${name}%')
+           ORDER BY last_name, first_name`,
+    );
+    return results.rows.map(c => new Customer(c));
+  }
+
+
   /** find all customers. */
 
   static async all() {
@@ -27,6 +46,23 @@ class Customer {
                   notes
            FROM customers
            ORDER BY last_name, first_name`,
+    );
+    return results.rows.map(c => new Customer(c));
+  }
+
+
+  /** find best customers. */
+
+  static async bestCustomers() {
+    const results = await db.query(
+      `SELECT customers.id,
+              first_name AS "firstName",
+              last_name  AS "lastName"
+           FROM customers
+           JOIN reservations ON customers.id = customer_id
+           GROUP BY customers.id
+           ORDER BY COUNT(*) DESC
+           LIMIT 10`,
     );
     return results.rows.map(c => new Customer(c));
   }
